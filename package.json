@@ -3,7 +3,8 @@
     "test": "mocha"
   },
   "dependencies": {
-    "axios": "^0.18.0"
+    "axios": "^0.18.0",
+    "tree-model": "^1.0.7"
   },
   "devDependencies": {
     "chai": "^4.2.0",
