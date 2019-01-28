@@ -1,5 +1,4 @@
 const axios = require('axios');
-const TreeModel = require('tree-model');
 
 module.exports = {
   getLibraryDependencies(libaryName, version) {
@@ -9,7 +8,6 @@ module.exports = {
       .catch(error => console.log(error));
   },
   getLibaryDependencyTree(libaryName, version) {
-    tree = new TreeModel();
-    return tree.parse({'name': libaryName, 'version': version});
+    return {}
   }
-};  
+}  
