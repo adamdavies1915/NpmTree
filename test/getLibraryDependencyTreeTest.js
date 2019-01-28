@@ -29,9 +29,10 @@ describe('Get dependency tree tests', () => {
   });
 
   it('Get a dependency for a libary', () => {
-    tree = getLibaryDependencyTree('require')
+    tree = getLibaryDependencyTree('require', 'latest')
     expect(typeof tree).to.equal('object');
     first = tree.first(a => true);
     expect(first.model.name).to.equal('require');
+    expect(first.model.version).to.equal('latest');
   });
 });

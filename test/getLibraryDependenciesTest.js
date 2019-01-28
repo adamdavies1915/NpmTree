@@ -12,7 +12,7 @@ describe('Get User tests', () => {
   });
 
   it('Get a list of dependencies for a libary', () => {
-    return getLibraryDependencies('express')
+    return getLibraryDependencies('express', 'latest')
       .then(response => {
         //expect an object back
         expect(typeof response).to.equal('object');
