@@ -11,7 +11,9 @@ function processDependenciesFromNpm (dependencies) {
       .replace('~', '') // strip to get an actual version number
       .replace('>', '')
       .replace('=', '')
-  }));
+      .replace(' ', '')
+      .split('<')[0]
+  }))
 }
 
 async function getLibraryDependenciesFromNpm (libraryName, version) {
