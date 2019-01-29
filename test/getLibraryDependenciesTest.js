@@ -2,7 +2,7 @@ const expect = require('chai').expect
 const nock = require('nock')
 
 const getLibraryDependenciesFromNpm = require('../index').getLibraryDependenciesFromNpm
-const sourceMapResponse = require('./source-mapResponse')
+const sourceMapResponse = require('./mockedResponses/source-mapResponse')
 
 describe('Get User tests', () => {
   beforeEach(() => {
