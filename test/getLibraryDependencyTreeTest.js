@@ -1,8 +1,8 @@
 const expect = require('chai').expect;
 const nock = require('nock');
 
-const getLibaryDependencyTree = require('../index').getLibaryDependencyTree;
-const getLibaryDependencyBranches = require('../index').getLibaryDependencyBranches;
+const getLibraryDependencyTree = require('../index').getLibraryDependencyTree;
+const libraryDependenciesRecursiveLookup = require('../index').libraryDependenciesRecursiveLookup;
 const requireResponse = require('./requireResponse');
 const stdResponse = require('./stdResponse');
 const sourceMapResponse = require('./source-mapResponse');
@@ -53,16 +53,16 @@ describe('Get dependency tree tests', () => {
         .reply(200, ipaddrjsResponse);
   });
 
-  it('Get a list of dependencies for a libary recursive', async () => {
-    response = await getLibaryDependencyBranches('amdefine', '0.0.4')
+  it('dependency recursive lookup when no dependencies', async () => {
+    response = await libraryDependenciesRecursiveLookup('amdefine', '0.0.4')
     expect(response).to.deep.equal([]);
   }),
-    it('Get a list of dependencies for a libary recursive', async () => {
-      response = await getLibaryDependencyBranches('optimist', '0.3.5')
+    it('dependency recursive lookup when one dependency', async () => {
+      response = await libraryDependenciesRecursiveLookup('optimist', '0.3.5')
       expect(response).to.deep.equal([{ name: "wordwrap", version: "0.0.2", dependencies: [] }]);
     }),
-    it('Get a list of dependencies for a libary recursive', async () => {
-      response = await getLibaryDependencyBranches('proxy-addr', '2.0.4')
+    it('dependency recursive lookup when two dependencies', async () => {
+      response = await libraryDependenciesRecursiveLookup('proxy-addr', '2.0.4')
       expect(response).to.deep.equal([
         { name: "forwarded", version: "0.1.2", dependencies: [] },
         { name: "ipaddr.js", version: "1.8.0", dependencies: [] }
@@ -71,9 +71,8 @@ describe('Get dependency tree tests', () => {
     });
 
   it('Get a dependency for a libary', async () => {
-    tree = await getLibaryDependencyTree('require', 'latest')
+    tree = await getLibraryDependencyTree('require', 'latest')
     expect(tree.name).to.equal("require");
-    console.log(tree)
     expect(tree).to.deep.equal(
       {
         'name': 'require', 'version': "latest", dependencies:

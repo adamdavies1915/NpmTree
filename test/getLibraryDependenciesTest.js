@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const nock = require('nock');
 
-const getLibraryDependencies = require('../index').getLibraryDependencies;
+const getLibraryDependenciesFromNpm = require('../index').getLibraryDependenciesFromNpm;
 const sourceMapResponse = require('./source-mapResponse');
 
 describe('Get User tests', () => {
@@ -11,8 +11,8 @@ describe('Get User tests', () => {
       .reply(200, sourceMapResponse);
   });
 
-  it('Get a list of dependencies for a libary', () => {
-    return getLibraryDependencies('source-map', 'latest')
+  it('Get a list of dependencies for a library', () => {
+    return getLibraryDependenciesFromNpm('source-map', 'latest')
       .then(response => {
         expect(response).to.deep.equal([{ name: "amdefine", version: "0.0.4" }]);
       });

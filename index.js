@@ -1,57 +1,49 @@
 const axios = require('axios');
 
-function process(dependencies) {
-  dependancyList = []
+function processDependenciesFromNpm(dependencies) {
+  const dependencyList = []
   if (dependencies == null) {
-    return dependancyList;
+    return dependencyList;
   }
-  Object.keys(dependencies).forEach(name => {
-    dependancyList.push({ 'name': name, 'version': dependencies[name].replace('~', '').replace('>', '').replace('=', '') })
-  });
-  return dependancyList
+  return Object.keys(dependencies).map(name => ({
+    name: name,
+    version: dependencies[name]
+      .replace('~', '') // strip to get an actual version number
+      .replace('>', '')
+      .replace('=', '')
+  }));
 }
 
-
-async function getLibraryDependencies(libaryName, version) {
+async function getLibraryDependenciesFromNpm(libraryName, version) {
   try {
-    const response = await axios.get(`https://registry.npmjs.org/${libaryName}/${version}`);
-    return process(response.data.dependencies)
+    const response = await axios.get(`https://registry.npmjs.org/${libraryName}/${version}`);
+    return processDependenciesFromNpm(response.data.dependencies)
   } catch (error) {
     console.error(error);
   }
 }
 
-async function getLibaryDependencyBranches(libaryName, version) {
-  unprocessedDependencies = await getLibraryDependencies(libaryName, version)
-  if (unprocessedDependencies.length == 0) {
-    return []
-  }
-
-  var processedDependancies = await Promise.all(unprocessedDependencies.map(async (item) => {
-    dependencies = await getLibaryDependencyBranches(item.name, item.version);
-    if (dependencies == null) {
-      dependencies = []
-    }
+async function libraryDependenciesRecursiveLookup(libraryName, version) {
+  const unprocessedDependencies = await getLibraryDependenciesFromNpm(libraryName, version)
+  var processedDependencies = await Promise.all(unprocessedDependencies.map(async (item) => {
+    const dependencies = await libraryDependenciesRecursiveLookup(item.name, item.version);
     return { 'name': item.name, 'version': item.version, 'dependencies': dependencies };
   }));
-  return processedDependancies;
+  return processedDependencies;
 }
 
-async function getLibaryDependencyTree(libaryName, version) {
+async function getLibraryDependencyTree(libraryName, version) {
   try {
-    lookup = await getLibaryDependencyBranches(libaryName, version);
-    {
-      tree = { name: libaryName, version: version, dependencies: lookup }
-    }
+    const lookup = await libraryDependenciesRecursiveLookup(libraryName, version);
+    const tree = { name: libraryName, version: version, dependencies: lookup }
     return tree
   } catch (error) {
     console.error(error);
   }
-
 }
 
 module.exports = {
-  getLibraryDependencies,
-  getLibaryDependencyTree,
-  getLibaryDependencyBranches
-}  
+  getLibraryDependenciesFromNpm,
+  getLibraryDependencyTree,
+  libraryDependenciesRecursiveLookup
+}
