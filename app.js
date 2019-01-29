@@ -1,15 +1,18 @@
-const http = require('http');
-const getLibraryDependencyTree = require('../index').getLibraryDependencyTree;
+const getLibraryDependencyTree = require('./index').getLibraryDependencyTree
 
-const hostname = '127.0.0.1';
-const port = 3000;
+const express = require('express')
+const app = express()
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello World\n');
-});
+app.listen(3000, () => {
+  console.log('Server running on port 3000')
+})
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+app.get('/npmlookup/:library/:version', async function (req, res) {
+  const jsons = await getLibraryDependencyTree(req.params['library'], req.params['version'])
+  res.json(jsons)
+})
+
+app.get('/npmlookup/:library/', async function (req, res) {
+  const jsons = await getLibraryDependencyTree(req.params['library'], 'latest')
+  res.json(jsons)
+})
