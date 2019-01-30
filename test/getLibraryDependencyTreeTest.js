@@ -1,8 +1,8 @@
 const expect = require('chai').expect
 const nock = require('nock')
 
-const getLibraryDependencyTree = require('../index').getLibraryDependencyTree
-const libraryDependenciesRecursiveLookup = require('../index').libraryDependenciesRecursiveLookup
+const getLibraryDependencyTree = require('../libraryLookup').getLibraryDependencyTree
+const libraryDependenciesRecursiveLookup = require('../libraryLookup').libraryDependenciesRecursiveLookup
 const requireResponse = require('./mockedResponses/requireResponse')
 const stdResponse = require('./mockedResponses/stdResponse')
 const sourceMapResponse = require('./mockedResponses/source-mapResponse')

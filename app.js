@@ -1,4 +1,4 @@
-const getLibraryDependencyTree = require('./index').getLibraryDependencyTree
+const getLibraryDependencyTree = require('./libraryLookup').getLibraryDependencyTree
 
 const express = require('express')
 const app = express()
